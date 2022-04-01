@@ -15,8 +15,14 @@ namespace Parks.Models
         public string City { get; set; }
 
         [Required]
-        [StringLength(30, ErrorMessage = "Message body must be between 5 and 50 characters long", MinimumLength = 2)]
+        [StringLength(2, ErrorMessage = "Message body must be 2 characters long", MinimumLength = 2)]
         public string State { get; set; }
+
+        [Required]
+        public bool Swimming { get; set; }
+
+        [Required]
+        public bool Hiking { get; set; }
 
         [Required]
         public int Size { get; set; }
