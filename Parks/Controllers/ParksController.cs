@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Parks.Models;
 using System.Linq;
+using System;
 
 namespace Parks.Controllers
 {
@@ -26,27 +27,22 @@ namespace Parks.Controllers
 
       if (name != null)
       {
+        Console.WriteLine("name is not null");
         query = query.Where(entry => entry.Name == name);
       }
-      if (name != null)
+      if (city != null)
       {
+        Console.WriteLine("name is not null");
         query = query.Where(entry => entry.City == city);
       }
-      if (name != null)
+      if (state != null)
       {
+        Console.WriteLine("name is not null");
         query = query.Where(entry => entry.State == state);
       }
-      if (name != null)
+      if (size > 0)
       {
-        query = query.Where(entry => entry.Swimming == swimming);
-      }
-      if (name != null)
-      {
-        query = query.Where(entry => entry.Hiking == hiking);
-      }
-      if (name != null)
-      {
-        query = query.Where(entry => entry.Size == size);
+        query = query.Where(entry => entry.Size > size);
       }
 
       return await query.ToListAsync();
