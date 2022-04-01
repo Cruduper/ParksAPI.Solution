@@ -20,13 +20,33 @@ namespace Parks.Controllers
 
     // GET api/animals
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Park>>> Get(string name, string city, string state, string swimming, string hiking, int size )
+    public async Task<ActionResult<IEnumerable<Park>>> Get(string name, string city, string state, bool swimming, bool hiking, int size )
     {
       var query = _db.Parks.AsQueryable();
 
       if (name != null)
       {
         query = query.Where(entry => entry.Name == name);
+      }
+      if (name != null)
+      {
+        query = query.Where(entry => entry.City == city);
+      }
+      if (name != null)
+      {
+        query = query.Where(entry => entry.State == state);
+      }
+      if (name != null)
+      {
+        query = query.Where(entry => entry.Swimming == swimming);
+      }
+      if (name != null)
+      {
+        query = query.Where(entry => entry.Hiking == hiking);
+      }
+      if (name != null)
+      {
+        query = query.Where(entry => entry.Size == size);
       }
 
       return await query.ToListAsync();
