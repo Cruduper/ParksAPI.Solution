@@ -5,9 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Parks.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
 
 namespace Parks
 {
@@ -20,23 +17,16 @@ namespace Parks
 
         public IConfiguration Configuration { get; }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-          // Enable CORS policy for specific websites/servers
-            services.AddCors(options =>
-            {
-                options.AddPolicy("Policy",
-                    builder =>
-                    {
-                        builder.WithOrigins("https://localhost:5001", "http://localhost:5000");
-                    });
-            });
+
             services.AddDbContext<ParksContext>(opt =>
                 opt.UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
             services.AddControllers();
+        }
 
-          }
-
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -45,9 +35,6 @@ namespace Parks
             }
 
             // app.UseHttpsRedirection();
-
-            // JWT Config
-            app.UseAuthentication();
 
             app.UseRouting();
 
