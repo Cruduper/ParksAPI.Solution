@@ -74,13 +74,27 @@ namespace Parks.Controllers
           throw;
         }
       }
+        return NoContent();
+      }
 
-      return NoContent();
-    }
+      [HttpDelete("{id}")]
+      public async Task<IActionResult> DeletePark(int id)
+      {
+        var park = await _db.Parks.FindAsync(id);
+        if (park == null)
+        {
+          return NotFound();
+        }
 
-    private bool ParkExists(int id)
-    {
-      return _db.Parks.Any(e => e.ParkId == id);
-    }
+        _db.Parks.Remove(park);
+        await _db.SaveChangesAsync();
+
+        return NoContent();
+      }
+
+      private bool ParkExists(int id)
+      {
+        return _db.Parks.Any(e => e.ParkId == id);
+      }
   }
 }
