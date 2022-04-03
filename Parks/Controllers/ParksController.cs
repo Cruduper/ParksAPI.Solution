@@ -1,11 +1,13 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Parks.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Cors;
+using System.Threading.Tasks;
+
 
 
 namespace Parks.Controllers
@@ -17,22 +19,26 @@ namespace Parks.Controllers
   public class ParksController : ControllerBase
   {
     private readonly ParksContext _db;
+    private readonly IUriService _uriService;
 
-    public ParksController(ParksContext db)
+    public ParksController(ParksContext db, IUriService uriService)
     {
       _db = db;
+      this._uriService = uriService;
     }
 
     /// <summary>
     /// Returns a paged list of Parks that correspond with any search queries in the URL
     /// </summary>
-    /// <remarks>
-    /// </remarks>
-    /// <param name="park"></param> 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Park>>> Get(string name, string city, string state, bool swimming, bool hiking, int size )
+    //  [FromQuery] attribute means PaginationFilter's constructor get non-default values
+    // from search query part of request (i.e. ?pageNumber=2 appended to URL changes 
+    // value of pageNumber property in PaginationFilters constructor from 1 to 2)
+    public async Task<ActionResult<IEnumerable<Park>>> Get([FromQuery] PaginationFilter filter, string name, string city, string state, bool swimming, bool hiking, int size )
     {
+      var route = Request.Path.Value;
       var query = _db.Parks.AsQueryable();
+      var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
 
       if (name != null)
       {
@@ -54,15 +60,20 @@ namespace Parks.Controllers
         query = query.Where(entry => entry.Size > size);
       }
 
-      return await query.ToListAsync();
+      var pagedData = await query
+               .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+               .Take(validFilter.PageSize)
+               .ToListAsync();
+
+      var totalRecords = await _db.Parks.CountAsync();
+      var pagedReponse = PaginationHelper.CreatePagedReponse<Park>(pagedData, validFilter, totalRecords, _uriService, route);
+      return Ok(pagedReponse);
     }
 
-    // POST api/animals
+
     /// <summary>
     /// Creates a new Park object
     /// </summary>
-    /// <remarks>
-    /// </remarks>
     /// <param name="park"></param> 
     [HttpPost]
     public async Task<ActionResult<Park>> Post(Park park)
@@ -77,27 +88,23 @@ namespace Parks.Controllers
     /// <summary>
     /// Returns a single Park object that has a ParkId value matching the id passed into the URL
     /// </summary>
-    /// <remarks>
-    /// </remarks>
     /// <param name="park"></param> 
     [HttpGet("{id}")]
     public async Task<ActionResult<Park>> GetPark(int id)
     {
-        var park = await _db.Parks.FindAsync(id);
+        // var park = await _db.Parks.FindAsync(id);
 
-        if (park == null)
-        {
-            return NotFound();
-        }
-
-        return park;
+        // if (park == null)
+        // {
+        //     return NotFound();
+        // }
+        var park = await _db.Parks.Where(a => a.ParkId == id).FirstOrDefaultAsync();
+        return Ok(new Response<Park>(park));
     }
 
     /// <summary>
     /// Modifies properties of an already existing Park
     /// </summary>
-    /// <remarks>
-    /// </remarks>
     /// <param name="park"></param> 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Park park)
