@@ -3,13 +3,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Parks.Models;
-using System.Linq;
 using System;
+using System.Linq;
+using Microsoft.AspNetCore.Cors;
+
 
 namespace Parks.Controllers
 {
-  [Route("api/[controller]")]
+  [EnableCors("Policy1")]
+  [Route("api/1.0/[controller]")]
   [ApiController]
+  [ApiVersion("1.0")]
   public class ParksController : ControllerBase
   {
     private readonly ParksContext _db;
@@ -19,7 +23,12 @@ namespace Parks.Controllers
       _db = db;
     }
 
-    // GET api/animals
+    /// <summary>
+    /// Returns a paged list of Parks that correspond with any search queries in the URL
+    /// </summary>
+    /// <remarks>
+    /// </remarks>
+    /// <param name="park"></param> 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Park>>> Get(string name, string city, string state, bool swimming, bool hiking, int size )
     {
@@ -49,6 +58,12 @@ namespace Parks.Controllers
     }
 
     // POST api/animals
+    /// <summary>
+    /// Creates a new Park object
+    /// </summary>
+    /// <remarks>
+    /// </remarks>
+    /// <param name="park"></param> 
     [HttpPost]
     public async Task<ActionResult<Park>> Post(Park park)
     {
@@ -59,6 +74,12 @@ namespace Parks.Controllers
     }
 
 
+    /// <summary>
+    /// Returns a single Park object that has a ParkId value matching the id passed into the URL
+    /// </summary>
+    /// <remarks>
+    /// </remarks>
+    /// <param name="park"></param> 
     [HttpGet("{id}")]
     public async Task<ActionResult<Park>> GetPark(int id)
     {
@@ -72,6 +93,12 @@ namespace Parks.Controllers
         return park;
     }
 
+    /// <summary>
+    /// Modifies properties of an already existing Park
+    /// </summary>
+    /// <remarks>
+    /// </remarks>
+    /// <param name="park"></param> 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Park park)
     {
@@ -100,6 +127,10 @@ namespace Parks.Controllers
         return NoContent();
       }
 
+      /// <summary>
+      /// Deletes a specific Park with a ParkId value matching the id passed into the URL.
+      /// </summary>
+      /// <param name="id"></param>  
       [HttpDelete("{id}")]
       public async Task<IActionResult> DeletePark(int id)
       {
