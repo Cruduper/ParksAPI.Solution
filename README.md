@@ -6,11 +6,11 @@
 
 ### 📖 Description
 
-C# API application designed to make details regarding specific message board posts availble to users (date, title, body, author, group). Users can return message board posts based on author information or message category.
+C# API application was a weekly project in my programming bootcamp, and includes code-first migration for database schema creation in MySQL. The API returns information about Parks and includes a naive implementation of search functionality using URL query strings. For the project it was suggested that we try one of five "further exploration" topics: CORS, pagination, Swagger, Versioning, and jwt token-based Authentication. I decided to spend some extra time and try to implement all of these into my API for educational purposes (although currently token-based Authentication is still a work in progress).   
 
-### 🦠 Known Bugs
+### 🦠 Known Bugs OR Issues
 
-- No known bugs
+- No known bugs 
 
 ### 🛠 Built With
 
@@ -66,8 +66,8 @@ To view or edit the code, you will need an code editor or text editor. The popul
 
 1. Click 'Code' to reveal the HTTPS url ending with .git and the 'Download ZIP' option.
 2. Open up your system Terminal or GitBash, navigate to your desktop with the command: `cd Desktop`, or whichever location suits you best.
-3. Clone the repository to your desktop: `$ git clone https://github.com/ryan-spencer1220/message-board-api`
-4. Run the command `cd message-board-api` to enter into the project directory.
+3. Clone the repository to your desktop: `$ git clone https://github.com/Cruduper/ParksAPI.Solution.git`
+4. Run the command `cd parks` to enter into the project directory.
 5. View or Edit:
    - Code Editor - Run the command `atom .` or `code .` to open the project in Atom or VisualStudio Code respectively for review and editing.
    - Text Editor - Open by double clicking on any of the files to open in a text editor.
@@ -92,12 +92,12 @@ To view or edit the code, you will need an code editor or text editor. The popul
   },
   "AllowedHosts": "*",
   "ConnectionStrings": {
-      "DefaultConnection": "Server=localhost;Port=3306;database=message_board;uid=root;pwd=YourPassword;"
+      "DefaultConnection": "Server=localhost;Port=3306;database=parks;uid=[YOUR_USER_ID_HERE];pwd=[YOUR_PASSWORD_HERE];"
   }
 }
 ```
 
-3. Change the server, port, and user id as necessary. Replace 'YourPassword' with relevant MySQL password (set at installation of MySQL).
+3. Change the server, port, and user id as necessary. Replace '\[YOUR_PASSWORD_HERE\]' with relevant MySQL password (set at installation of MySQL), same goes for \[YOUR_USER_ID_HERE\], although you may have simply set your user id to "root" during installation.
 
 #### Database
 
@@ -135,44 +135,47 @@ Access specific information on message board posts from various authors and cate
 #### HTTP Request
 
 ```
-GET /api/messsages
-POST /api/messages
-GET /api/messages/{id}
-PUT /api/messages/{id}
-DELETE /api/messages/{id}
+GET /api/1.0/Parks
+POST /api/1.0/Parks
+GET /api/1.0/Parks/{id}
+PUT /api/1.0/Parks/{id}
+DELETE /api/1.0/Parks/{id}
 ```
 
-#### Path Parameters
+#### Path Parameters (must be exact match)
 
 | Parameter |  Type  | Default | Required | Description                                                    |
 | :-------: | :----: | :-----: | :------: | -------------------------------------------------------------- |
-|   Date    | string |  none   |   true   | Return matches by specific date or date range.                 |
-|  Author   | string |  none   |   true   | Return message board posts based on specific author.           |
-|   Group   | string |  none   |   true   | Return all message board posts associated with specific group. |
+|   Name    | string |  none   |   true   | Return matches by specific park's name               |
+|  City   | string |  none   |   true   | Return matches by specific city that park is located in          |
+|   State  | string |  none   |   true   | Return matches by specific state that park is located in |
+|   Size   | int |  none   |   true   | Return matches of parks with larger size (in square miles) than given query number |
 
 #### Example Query
 
 ```
-https://localhost:5000/api/messages/?author=Ryan+Spencer
+https://localhost:5000/api/messages/?city=Portland&size=246
 ```
 
 #### Sample JSON Response
 
 ```
 {
-    "Id": 1,
-    "Date": "March 31st, 2022",
-    "Title": "Test Post",
-    "Body": "Test body message",
-    "Author": "Ryan Spencer",
-    "Group": "Video Games",
+    "parkId": 9,
+    "name": "Banks Vernonia Trail",
+    "city": "Portland",
+    "state": "OR",
+    "swimming": false,
+    "hiking": true,
+    "size": 2719
 
-    "Id": 5,
-    "Date": "March 31st, 2022",
-    "Title": "Test Post Alternative",
-    "Body": "Test body message two",
-    "Author": "Ryan Spencer",
-    "Group": "Sports"
+    "parkId": 12,
+    "name": "Bald Peak",
+    "city": "Portland",
+    "state": "OR",
+    "swimming": false,
+    "hiking": true,
+    "size": 246
 }
 
 ```
@@ -181,15 +184,13 @@ https://localhost:5000/api/messages/?author=Ryan+Spencer
 
 ### 🤝 Contributors
 
-| Author                                              |                      Author                      |                   Author                   |
-| --------------------------------------------------- | :----------------------------------------------: | :----------------------------------------: |
-| [Eric Crudup](https://github.com/Cruduper) |
+ [Eric Crudup](https://github.com/Cruduper) 
 
 ---
 
 ### ⚖️ License
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). Copyright (C) 2021 Eric Crudup. All Rights Reserved.
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). Copyright (C) 2022 Eric Crudup. All Rights Reserved.
 
 ```
 MIT License
