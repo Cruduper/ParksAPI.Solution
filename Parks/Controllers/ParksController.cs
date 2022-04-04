@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -88,7 +89,7 @@ namespace Parks.Controllers
     /// <summary>
     /// Returns a single Park object that has a ParkId value matching the id passed into the URL
     /// </summary>
-    /// <param name="park"></param> 
+    /// <param name="id"></param> 
     [HttpGet("{id}")]
     public async Task<ActionResult<Park>> GetPark(int id)
     {
@@ -105,6 +106,7 @@ namespace Parks.Controllers
     /// <summary>
     /// Modifies properties of an already existing Park
     /// </summary>
+    /// <param name="id"></param> 
     /// <param name="park"></param> 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Park park)
